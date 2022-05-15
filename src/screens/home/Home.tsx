@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useCallback } from 'react';
+import React, { FC, useState, useEffect, useCallback, useContext } from 'react';
 import { useDimensions } from '@react-native-community/hooks';
 import { View, Text, FlatList } from 'react-native';
 import Header from '../../components/header/Header';
@@ -7,7 +7,7 @@ import PlanetListItem from '../../components/planetListItem/PlanetListItem';
 import TripPlanner from '../../components/tripPlanner/TripPlanner';
 import { PlanetType } from './homeHelper/types';
 import styles from './styles';
-
+import { AppContext } from '../App';
 
 
 const Home: FC = () => {
@@ -17,8 +17,8 @@ const Home: FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [planetsDataPage, setPlanetsDataPage] = useState<number>(1);
     const [finalPageReached, setFinalPageReached] = useState<boolean>(false);
-    const [selectedPlanets, setSelectedPlanets] = useState<PlanetType[]>([]);
 
+    const { selectedPlanets } = useContext<any>(AppContext);
 
     const imagesArray: string[] = [
         `https://images.ferryhopper.com/locations/Skiathos.jpg`,
@@ -102,42 +102,12 @@ const Home: FC = () => {
     */
     const renderPlanets: (item: any) => JSX.Element = useCallback(({ item, index }) => {
         
-        const isSelected: boolean = selectedPlanets?.some((planet: PlanetType) => planet?.id === item?.id);
-
         return (
-            <PlanetListItem
-                item={item}
-                onPress={onPlanetPress}
-                isSelected={isSelected}
-            />
+            <PlanetListItem item={item} />
         )
-    }, [selectedPlanets]);
-
-    
-    /**
-     * Adds the pressed planet to the selectedPlanets array, if the array length is <5 and if the item is not already added
-    */
-    const onPlanetPress: (planetPressed: PlanetType) => void = useCallback(( planetPressed ) => {
-        
-        let tempSelectedPlanets: PlanetType[] = [...selectedPlanets];
-        const isSelected: boolean = tempSelectedPlanets?.some((planet: PlanetType) => planet?.id === planetPressed?.id);
-        
-        if ((tempSelectedPlanets?.length < 5) && !isSelected) {
-            tempSelectedPlanets.push(planetPressed);
-            setSelectedPlanets(tempSelectedPlanets);
-        }
-
-    }, [selectedPlanets]);
-
-
-    /**
-     * Clears selected planets array
-    */
-    const clearSelections: () => void = useCallback(() => {
-        
-        setSelectedPlanets([]);
     }, []);
-    
+
+
     return (
         <View style={styles.container}>
 
@@ -179,7 +149,6 @@ const Home: FC = () => {
             {selectedPlanets?.length > 0 ?
                 <TripPlanner 
                     planetsList={selectedPlanets}
-                    clearSelections={clearSelections}
                 />
                 : null
             }

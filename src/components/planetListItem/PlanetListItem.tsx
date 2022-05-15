@@ -1,21 +1,22 @@
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { PlanetType } from '../../screens/home/homeHelper/types';
 import FastImage from 'react-native-fast-image';
 import styles from './styles';
 
+import { AppContext } from '../../screens/App';
+
 
 type Props = {
     item: PlanetType;
-    onPress: (planetPressed: PlanetType) => void;
-    isSelected: boolean;
 };
 
 const PlanetListItem: React.FC<Props> = ({
     item,
-    onPress,
-    isSelected,
 }) => {
+    const { onPlanetPress, selectedPlanets } = useContext<any>(AppContext);
+
+    const isSelected: boolean = selectedPlanets?.some((planet: PlanetType) => planet?.id === item?.id);
 
     /**
      * Function which gets a number in string format and returns it with the standard US number format with comma as the thousands separator
@@ -33,7 +34,7 @@ const PlanetListItem: React.FC<Props> = ({
     return (
         <Pressable
             style={({ pressed }) => styles.container(pressed, isSelected)}
-            onPress={() => onPress(item)}
+            onPress={() => onPlanetPress(item)}
         >
             <FastImage
                 source={item?.image ? { uri: item.image } : {}}

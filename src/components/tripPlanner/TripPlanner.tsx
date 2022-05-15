@@ -1,14 +1,14 @@
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { PlanetType } from '../../screens/home/homeHelper/types';
 import FastImage from 'react-native-fast-image';
 import styles from './styles';
 import { COLOR } from '../../utils/Colors';
+import { AppContext } from '../../screens/App';
 
 
 type Props = {
     planetsList: PlanetType[];
-    clearSelections: () => void;
 };
 
 type PlanetItemType = {
@@ -34,8 +34,8 @@ const PlanetItem: React.FC<PlanetItemType> = memo(({ planet, showSeparator }) =>
 
 const TripPlanner: React.FC<Props> = ({
     planetsList,
-    clearSelections,
 }) => {
+    const { clearSelections } = useContext<any>(AppContext);
 
     return (
         <View style={styles.container}>
